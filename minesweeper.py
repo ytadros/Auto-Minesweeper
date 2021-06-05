@@ -30,7 +30,7 @@ class Minesweeper(tkinter.Tk):
         """
         Starts a new game based on entries in the new_game_panel.
         """
-        new_percent_mined = int(self.control_panel.new_game_panel.percent_mined_box.get())
+        new_percent_mined = float(self.control_panel.new_game_panel.percent_mined_box.get())
         if new_percent_mined < 0:
             return
 

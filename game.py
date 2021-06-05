@@ -3,7 +3,7 @@ from game_settings import pause, GAME_OVER_MSG, ALL_CLEAR_MSG
 from minefield import Minefield
 from cell import Cell
 from solving_queue import Queue, SuperQueue
-from neighborhood import Block
+from neighborhood import Block, Neighborhood
 
 
 class Game(tkinter.Frame):
@@ -91,8 +91,10 @@ class Game(tkinter.Frame):
         self.safes_left = (width * height) - total_mines
 
         self.auto_solving = control_panel.auto_solving
+        self.hyper_solving = control_panel.hyper_solving
         self.direction = control_panel.direction_panel.direction
 
+        # self.flag_queue = SuperQueue(self.field, color="to_flag", direction_var=self.direction)
         self.clear_queue = SuperQueue(self.field, color="clear_queue", direction_var=self.direction)
         self.auto_queue = SuperQueue(self.field, color="auto_queue", direction_var=self.direction)
         self.hyper_queue = SuperQueue(self.field, color="hyper_queue", direction_var=self.direction)
@@ -111,8 +113,10 @@ class Game(tkinter.Frame):
             for y in range(height):
                 self.field[x, y] = Cell(master=self)
                 self.field[x, y].grid(row=y, column=x)
-                self.field[x, y].bind("<Button-1>", lambda event, loc=(x, y): self.left_click(loc))
-                self.field[x, y].bind("<Button-3>", lambda event, loc=(x, y): self.toggle_flag(loc))
+                self.field[x, y].bind("<Button-1>",
+                                      lambda event, loc=(x, y): self.left_click(loc))
+                self.field[x, y].bind("<Button-3>",
+                                      lambda event, loc=(x, y): self.toggle_flag(loc, auto_flag=False))
 
     @property
     def mines_left(self):
@@ -133,16 +137,20 @@ class Game(tkinter.Frame):
         self.safe_count_label.config(text=safes_left)
 
     def _auto_spark(self):
-        """Kick-starts `auto_queue` processing if it's not already busy."""
-        self.auto_queue.clean_up(emphasis=self.emphasis["redundant"])
-        if not self.auto_queue.is_busy and not self.clear_queue.is_busy:
+        """Kick-starts all queues processing if it's not already busy."""
+        clear_busy = self.clear_queue.is_busy
+        auto_busy = self.auto_queue.is_busy
+        hyper_busy = self.hyper_queue.is_busy
+
+        if self.clear_queue and not clear_busy:
+            self.clear_queue.is_busy = True
+            self.process(self.clear_queue)
+        elif self.auto_queue and not clear_busy and not auto_busy:
             self.auto_queue.is_busy = True
             self.process(self.auto_queue)
-
-            self.hyper_queue.clean_up(emphasis=self.emphasis["redundant"])
-            if not self.hyper_queue.is_busy and not self.clear_queue.is_busy:
-                self.hyper_queue.is_busy = True
-                self.process(self.hyper_queue)
+        elif self.hyper_queue and not clear_busy and not auto_busy and not hyper_busy:
+            self.hyper_queue.is_busy = True
+            self.process(self.hyper_queue)
 
     def uncover(self, loc: tuple[int, int]) -> None:
         """
@@ -154,6 +162,13 @@ class Game(tkinter.Frame):
         If it does have mined neighbors, and if `auto_solving` is checked,
         add the cell's coordinates to the `auto_queue`.
         """
+        if loc in self.clear_queue:
+            self.clear_queue.remove(loc)
+
+        if self.field[loc].is_naked:
+            print("Clear naked")
+            return
+
         self.field.uncover(loc)
 
         if self.field.is_triggered():
@@ -188,11 +203,9 @@ class Game(tkinter.Frame):
             self.auto_queue.clean_up(emphasis=self.emphasis["redundant"])
             self.hyper_queue.clean_up(emphasis=self.emphasis["redundant"])
 
-        if not self.clear_queue.is_busy:
-            self.clear_queue.is_busy = True
-            self.process(self.clear_queue)
+        self._auto_spark()
 
-    def toggle_flag(self, loc: tuple[int, int]) -> None:
+    def toggle_flag(self, loc: tuple[int, int], auto_flag=True) -> None:
         """
         Toggle flag at location `loc`.
 
@@ -203,6 +216,7 @@ class Game(tkinter.Frame):
             return
 
         if self.field[loc].is_flagged:
+            print("UNFLAGGING")
             self.field[loc].un_flag()
             self.mines_left += 1
         else:
@@ -217,9 +231,10 @@ class Game(tkinter.Frame):
             self.auto_queue.add_batch(useful_neighbors,
                                       emphasis=self.emphasis["add_batch"],
                                       color="new_auto")
+        if not auto_flag:
             self._auto_spark()
 
-    def solve_block(self, center_cell: tuple[int, int], first_round=True):
+    def solve_block(self, center_cell: tuple[int, int]):
         """
         Creates a Block around `center_cell` and calls that Block's
          solve() method.
@@ -235,12 +250,6 @@ class Game(tkinter.Frame):
 
         Args:
             center_cell: `tuple`. Coordinates.
-            first_round: `bool`. This is a temporary measure until the
-                                 `hyper_queue` solving logic is finalized.
-                                 If False, that means the call came from
-                                 the `hyper_queue` process, so the coordinates
-                                 will not be added to the `hyper_queue`
-                                 if unsolved.
         """
         block = Block(self.field, center_cell)
         action = block.solve()
@@ -264,8 +273,45 @@ class Game(tkinter.Frame):
                 new_flag = to_flag[0]
                 to_flag.remove(new_flag)
                 self.toggle_flag(new_flag)
-        elif first_round and center_cell not in self.hyper_queue:
+        elif self.hyper_solving.get() and center_cell not in self.hyper_queue:
             self.hyper_queue.append(center_cell)
+            for neighbor in block.naked_neighbors:
+                if neighbor in self.hyper_queue or neighbor in self.auto_queue:
+                    continue
+                neighbor_block = Block(self.field, neighbor)
+                if neighbor_block.unknown_neighbors:
+                    self.hyper_queue.append(neighbor)
+        self._auto_spark()
+
+    def solve_neighborhood(self, cell_a, cell_b):
+        self.field[cell_a].bg = "naked"
+        self.field[cell_b].bg = "hyper_queue"
+        clear_set, flag_set = Neighborhood(self.field, cell_a, cell_b).solve()
+        # for cell in flag_set:
+        #     if self.field[cell].is_flagged:
+        #         print("to_flag from solve_neighborhood (before add_batch to clear_queue)")
+        if clear_set:
+            self.clear_queue.add_batch(clear_set,
+                                       emphasis=self.emphasis["add_batch"],
+                                       color="new_clear")
+        if flag_set:
+            to_flag = Queue(field=self.field, color="to_flag")
+            for cell in flag_set:
+                # if self.field[cell].is_flagged:
+                #     print("to_flag from solve_neighborhood (after add_batch to clear_queue)")
+                to_flag.append(cell)
+            to_flag.direction = self.direction
+            to_flag.re_orient()
+            if self.emphasis["to_flag"].is_checked:
+                self.update()
+                pause(self.emphasis["to_flag"].pause_time)
+            while to_flag:
+                new_flag = to_flag[0]
+                if self.field[new_flag].is_flagged:
+                    print("new_flag from solve_neighborhood")
+                to_flag.remove(new_flag)
+                self.toggle_flag(new_flag)
+        self._auto_spark()
 
     def process(self, queue: SuperQueue):
         """
@@ -294,7 +340,12 @@ class Game(tkinter.Frame):
 
         while queue:
             queue.re_orient()
-            next_cell = queue[-1]
+
+            if self.direction.get() == "FIFO":
+                next_cell = queue[0]
+            else:
+                next_cell = queue[-1]
+
             self.field[next_cell].bg = "active_cell"
 
             if queue == self.clear_queue:
@@ -307,11 +358,23 @@ class Game(tkinter.Frame):
                 self.solve_block(next_cell)
 
             elif queue == self.hyper_queue:
-                apply_emphasis("hyper_queue")
+                # apply_emphasis("hyper_queue")
                 queue.remove(next_cell)
-                self.solve_block(next_cell, first_round=False)
+                # self.solve_block(next_cell, first_round=False)
+                block_a = Block(self.field, next_cell)
+                unknowns_a = block_a.unknown_neighbors
+
+                for cell_b in queue[::-1]:
+                    block_b = Block(self.field, cell_b)
+                    unknowns_b = block_b.unknown_neighbors
+                    if unknowns_a & unknowns_b and unknowns_a.symmetric_difference(unknowns_b):
+                        self.field[next_cell].bg = "active_cell"
+                        self.field[cell_b].bg = "neighbor_cell"
+                        apply_emphasis("hyper_queue")
+                        self.solve_neighborhood(next_cell, cell_b)
 
         queue.is_busy = False
+        self._auto_spark()
 
     def left_click(self, loc: tuple[int, int]):
         """Bound to left-click button for each Cell."""
@@ -323,5 +386,6 @@ class Game(tkinter.Frame):
         else:
             self.uncover(loc)
 
-        if self.auto_solving.get():
-            self._auto_spark()
+        #
+        # if self.auto_solving.get():
+        #     self._auto_spark()
