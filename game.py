@@ -378,7 +378,7 @@ class Game(tkinter.Frame):
 
     def left_click(self, loc: tuple[int, int]):
         """Bound to left-click button for each Cell."""
-        if self.game_over or self.win:
+        if self.field[loc].is_flagged or self.game_over or self.win:
             return
 
         if self.field[loc].is_naked:
