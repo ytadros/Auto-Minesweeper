@@ -14,6 +14,10 @@ class Game(tkinter.Frame):
 
         field (`Minefield`): Minefield containing Cells indexed by `(x, y)` tuples.
 
+        is_new (`bool`): If True, there are still no mines in the Minefield.
+                         Once the first Cell is uncovered, mines are placed
+                         and `is_new` is set to False.
+
         game_over (`bool`): If True, player lost (uncovered a mined cell)
                             No more moves are allowed.
 
@@ -77,6 +81,7 @@ class Game(tkinter.Frame):
 
         self.field = Minefield(total_mines)
 
+        self.is_new = True
         self.game_over = False
         self.win = False
 
@@ -380,6 +385,13 @@ class Game(tkinter.Frame):
         """Bound to left-click button for each Cell."""
         if self.field[loc].is_flagged or self.game_over or self.win:
             return
+
+        if self.is_new:
+            self.is_new = False
+            self.field.place_mines(loc)
+            for cell in self.field:
+                if self.field[cell].is_flagged:
+                    self.toggle_flag(cell)
 
         if self.field[loc].is_naked:
             self.solve_block(loc)

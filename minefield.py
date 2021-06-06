@@ -10,10 +10,6 @@ class Minefield(dict):
 
         total_mines (`int`): Total number of mines to be placed in Minefield.
 
-        is_new (`bool`): If True, there are still no mines in the Minefield.
-                         Once the first Cell is uncovered, mines are placed
-                         and `is_new` is set to False.
-
     Methods:
 
         place_mines(first_step): Place mines randomly in Minefield, avoiding
@@ -31,7 +27,6 @@ class Minefield(dict):
     def __init__(self, total_mines):
         super().__init__()
         self.total_mines = total_mines
-        self.is_new = True
 
     def set_mine(self, loc):
         """Sets a mine at location `loc` and lets the neighbors know."""
@@ -74,10 +69,6 @@ class Minefield(dict):
 
         If field is new, place mines first.
         """
-        if self.is_new:
-            self.place_mines(first_step=loc)
-            self.is_new = False
-
         self[loc].uncover()
 
     def is_all_clear(self) -> bool:

@@ -135,14 +135,16 @@ class ControlPanel(tk.Frame):
         self.status_label.grid(row=0, column=0)
 
         self.safe_count_frame = tk.LabelFrame(master=self, text="Safe Cells Left")
+        self.safe_count_frame.columnconfigure(0, weight=1)
         self.safe_count_frame.grid(row=1, column=0)
-        self.safe_count_label = tk.Label(master=self.safe_count_frame)
-        self.safe_count_label.grid(row=0, column=0)
+        self.safe_count_label = tk.Label(master=self.safe_count_frame, font='bold', fg='dark green')
+        self.safe_count_label.grid(row=0, column=0, sticky='ew')
 
         self.mine_count_frame = tk.LabelFrame(master=self, text="Mines Left")
+        self.mine_count_frame.columnconfigure(0, weight=1)
         self.mine_count_frame.grid(row=2, column=0)
-        self.mine_count_label = tk.Label(master=self.mine_count_frame)
-        self.mine_count_label.grid(row=0, column=0)
+        self.mine_count_label = tk.Label(master=self.mine_count_frame, font='bold', fg='red3')
+        self.mine_count_label.grid(row=0, column=0, sticky='ew')
 
         self.auto_solving = tk.BooleanVar(value=True)
         self.auto_solve_check = tk.Checkbutton(master=self, text="Auto Solve (one-cell logic)",
