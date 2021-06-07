@@ -49,9 +49,12 @@ class Minefield(dict):
         leave_clear.update(Block(self, first_step).unknown_neighbors)
 
         already_flagged = {loc for loc in self if self[loc].is_flagged}
+
         for flag in already_flagged:
             self.set_mine(flag)
-            leave_clear.update(Block(self, flag).unknown_neighbors)
+            flag_buffer = Block(self, flag).unknown_neighbors
+            if len(self) - len(leave_clear) - len(flag_buffer) >= self.total_mines:
+                leave_clear.update(flag_buffer)
             mines_to_be_placed -= 1
 
         for _ in range(mines_to_be_placed):
