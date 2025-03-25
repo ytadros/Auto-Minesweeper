@@ -124,6 +124,9 @@ class NewGamePanel(tk.LabelFrame):
         self.new_game_button = tk.Button(master=self, text="New Game")
         self.new_game_button.grid(row=3, column=0, columnspan=2)
 
+        self.replay_button = tk.Button(master=self, text="Replay")
+        self.replay_button.grid(row=4, column=0, columnspan=2)
+
 
 class ControlPanel(tk.Frame):
     """Frame containing all of the settings and functionality."""
