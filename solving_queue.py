@@ -35,7 +35,7 @@ class Queue(list):
             This measure prevents recursion errors.
     """
 
-    def __init__(self, field=None, color=None, direction="unordered"):
+    def __init__(self, field=None, color=None, direction="LIFO"):
         super().__init__()
         self.field = field
         self.color = color
@@ -71,10 +71,15 @@ class Queue(list):
 
     def re_orient(self):
         """Sorts Queue based on `direction`"""
-        if self.direction == "unordered":
+        if self.direction in ("LIFO", "FIFO"):
             return
+
         if self.direction == "random":
             random.shuffle(self)
+            return
+
+        if self.direction == "whiplash":
+            self.reverse()
             return
 
         if self.direction in ("east", "west"):

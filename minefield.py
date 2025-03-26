@@ -10,10 +10,6 @@ class Minefield(dict):
 
         total_mines (`int`): Total number of mines to be placed in Minefield.
 
-        is_new (`bool`): If True, there are still no mines in the Minefield.
-                         Once the first Cell is uncovered, mines are placed
-                         and `is_new` is set to False.
-
     Methods:
 
         place_mines(first_step): Place mines randomly in Minefield, avoiding
@@ -31,7 +27,12 @@ class Minefield(dict):
     def __init__(self, total_mines):
         super().__init__()
         self.total_mines = total_mines
-        self.is_new = True
+
+    def set_mine(self, loc):
+        """Sets a mine at location `loc` and lets the neighbors know."""
+        self[loc].is_mined = True
+        for neighbor in Block(self, loc):
+            self[neighbor].surrounding_mines += 1
 
     def place_mines(self, first_step: tuple[int, int]):
         """
@@ -42,20 +43,28 @@ class Minefield(dict):
                         No mines will be placed in this Cell or in any
                         of its neighbors.
         """
-        leave_clear = Block(self, first_step)
-        leave_clear.add(first_step)
-        for _ in range(self.total_mines):
-            mined_cell = ()
+        mines_to_be_placed = self.total_mines
+
+        leave_clear = {first_step}
+        leave_clear.update(Block(self, first_step).unknown_neighbors)
+
+        already_flagged = {loc for loc in self if self[loc].is_flagged}
+
+        for flag in already_flagged:
+            self.set_mine(flag)
+            flag_buffer = Block(self, flag).unknown_neighbors
+            if len(self) - len(leave_clear) - len(flag_buffer) >= self.total_mines:
+                leave_clear.update(flag_buffer)
+            mines_to_be_placed -= 1
+
+        for _ in range(mines_to_be_placed):
             mine_placed = False
             while not mine_placed:
                 candidate = random.choice(list(self))
                 if candidate in leave_clear or self[candidate].is_mined:
                     continue
-                mined_cell = candidate
-                self[candidate].is_mined = True
+                self.set_mine(candidate)
                 mine_placed = True
-            for neighbor in Block(self, mined_cell):
-                self[neighbor].surrounding_mines += 1
 
     def uncover(self, loc: tuple[int, int]):
         """
@@ -63,10 +72,6 @@ class Minefield(dict):
 
         If field is new, place mines first.
         """
-        if self.is_new:
-            self.place_mines(first_step=loc)
-            self.is_new = False
-
         self[loc].uncover()
 
     def is_all_clear(self) -> bool:

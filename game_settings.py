@@ -21,7 +21,7 @@ PERCENT_MINED = 19
 
 ACTIVE_FIELD_MSG = "There are still cells to clear..."
 GAME_OVER_MSG = "!!!!!*****BOOM*****!!!!!"
-ALL_CLEAR_MSG = "ALL CLEAR"
+ALL_CLEAR_MSG = "~~~ALL CLEAR~~~"
 
 
 # Options for time to pause(in milliseconds).
@@ -30,15 +30,15 @@ ALL_CLEAR_MSG = "ALL CLEAR"
 PAUSE_TIMES = tuple(range(0, 6)) \
               + tuple(range(10, 51, 10)) \
               + tuple(range(100, 501, 100)) \
-              + tuple([1000])
+              + tuple([1000, 2000, 3000])
 
 
 # This is where to change any color or highlight, background or foreground.
 COLORS = {
-    "hello": "MediumPurple1",
     "hyper_queue": "MediumPurple1",
     "new_hyper": "purple1",
     "active_cell": "yellow",
+    "neighbor_cell": "orange",
     "clear_queue": "pale green",
     "new_clear": "lime green",
     "auto_queue": "light blue",

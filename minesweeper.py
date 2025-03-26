@@ -25,12 +25,13 @@ class Minesweeper(tkinter.Tk):
         self.control_panel.new_game_panel.percent_mined_box.insert("end", percent_mined)
 
         self.control_panel.new_game_panel.new_game_button.config(command=self.new_game)
+        self.control_panel.new_game_panel.replay_button.config(command=self.replay)
 
     def new_game(self):
         """
         Starts a new game based on entries in the new_game_panel.
         """
-        new_percent_mined = int(self.control_panel.new_game_panel.percent_mined_box.get())
+        new_percent_mined = float(self.control_panel.new_game_panel.percent_mined_box.get())
         if new_percent_mined < 0:
             return
 
@@ -41,6 +42,26 @@ class Minesweeper(tkinter.Tk):
                          percent_mined=new_percent_mined)
         self.game.grid(row=0, column=1)
         self.control_panel.status_label.config(text=ACTIVE_FIELD_MSG)
+
+    def replay(self):
+        """Resets minefield with the same mine layout."""
+        # TODO: this.
+        #  Game class should be initialized with number mines instead of percent.
+        #  Mines Left label should say 0 or ? until mines are actually placed.
+        layout = {loc: cell.is_mined for loc, cell in self.game.field.items()}
+        self.game.destroy()
+        self.game = Game(control_panel=self.control_panel,
+                         width=int(self.control_panel.new_game_panel.width_box.get()),
+                         height=int(self.control_panel.new_game_panel.height_box.get()),
+                         percent_mined=0)
+        self.game.grid(row=0, column=1)
+        self.control_panel.status_label.config(text=ACTIVE_FIELD_MSG)
+        self.game.is_new = False
+        [self.game.field.set_mine(mine) for mine in layout if layout[mine]]
+
+    # TODO: sqlite database storing pickled Game objects, so I can categorize
+    #  them and analyze based on which direction algorithm was used to solve
+    #  and how much of the board it was able to clear.
 
 
 if __name__ == "__main__":

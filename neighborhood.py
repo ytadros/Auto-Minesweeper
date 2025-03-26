@@ -81,13 +81,36 @@ class Block(set):
         return decision
 
 
-# class Neighborhood:
-#     """
-#     Neighborhood of Blocks.
-#     for now, assumes exactly two args.
-#     """
-#     def __init__(self, field, *args):
-#         self.blocks = [Block(field, locus) for locus in args]
-#         self.relationships = {
-#             (self.blocks[0].locus,)
-#         }
+class Neighborhood:
+    """Neighborhood of two intersecting Blocks"""
+    def __init__(self, field, *args):
+        self.field = field
+        self.cell_a = args[0]
+        self.cell_b = args[1]
+
+    def solve(self):
+        """Analyze both Blocks and return a set of cells to flag and and set to clear"""
+        to_flag = set()
+        to_clear = set()
+
+        block_a = Block(self.field, self.cell_a)
+        block_b = Block(self.field, self.cell_b)
+
+        a_value = self.field[self.cell_a].surrounding_mines
+        a_mines_left = a_value - len(block_a.flagged_neighbors)
+        b_value = self.field[self.cell_b].surrounding_mines
+        b_mines_left = b_value - len(block_b.flagged_neighbors)
+
+        a_private_unknown = block_a.unknown_neighbors - block_b.unknown_neighbors
+        num_a_private_unknown = len(a_private_unknown)
+        b_private_unknown = block_b.unknown_neighbors - block_a.unknown_neighbors
+        num_b_private_unknown = len(b_private_unknown)
+
+        if a_mines_left - num_a_private_unknown == b_mines_left:
+            to_flag.update(a_private_unknown)
+            to_clear.update(b_private_unknown)
+        elif b_mines_left - num_b_private_unknown == a_mines_left:
+            to_flag.update(b_private_unknown)
+            to_clear.update(a_private_unknown)
+
+        return to_clear, to_flag
