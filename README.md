@@ -21,10 +21,13 @@ This project is currently undergoing a major refactor to improve structure, main
 | April 15–21 | Profiling + performance optimizations |
 | April 22–30 | Logging, config cleanup, optional features |
 
-<p style="color:red; font-weight:bold;"> ⚠️ Recruiters/Reviewers: This repo reflects ongoing improvements! Please check commit history and PRs for recent progress.
+<br/><br/>
+> ### ⚠️ Recruiters/Reviewers: This repo reflects ongoing improvements! Please check commit history and PRs for recent progress.
+<br/>
 
 ---
----
+
+<br/>
 
 # Auto-Minesweeper
 My first Python project
