@@ -30,18 +30,10 @@ This project is currently undergoing a major refactor to improve structure, main
 <br/>
 
 # Auto-Minesweeper
-My first Python project
 
-This is my first ever object oriented project.
-I used Python and tkinter.
+This project began with my love for Minesweeper and my deep fascination—shaped in part by being autistic—with patterns, logic, and visualizing how things work under the hood. While you can absolutely use this like a normal Minesweeper game, the real heart of it is the logic engine: a solver that reasons through each move, displays its thought process visually, and lets me tinker with that process in real time. I wanted to build something where I could see the logic unfold—one step at a time—and explore how small changes in the engine affect outcomes on the board.
 
-This is a minesweeper game with the capacity to solve itself where possible.
-
-There are options to highlight and showcase certain process executions, visualizing the solving process.
-
-There are also options to change the solving style.
-(Try starting a new game with percent_mined set to 0, then try out all the different
-  process directions -- make sure the "to_clear" checkbox is checked in the "Display Processes" Panel)
+The screenshots below show the logic engine in action, visualizing its deductions and choices as it solves the game. The interface is designed to give me full control over game generation, including manually placing mines before the first move (which triggers actual mine placement). You can even adjust how the logic engine processes its reasoning—FIFO, LIFO, directional priorities, or even random—through the direction panel. For me, it’s not just a game; it’s a playground for experimenting with logic and watching it come to life.
 
 ![Logic Engine At Work](https://github.com/user-attachments/assets/72be0ec7-9531-4c12-8c2b-a243bd46f969)
 ![Custom Mine Placement](https://github.com/user-attachments/assets/d1809a5c-b2b2-4b12-bee3-7cd2957f3850)
