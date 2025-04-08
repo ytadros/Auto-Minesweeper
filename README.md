@@ -42,3 +42,7 @@ There are options to highlight and showcase certain process executions, visualiz
 There are also options to change the solving style.
 (Try starting a new game with percent_mined set to 0, then try out all the different
   process directions -- make sure the "to_clear" checkbox is checked in the "Display Processes" Panel)
+
+![Logic Engine At Work](https://github.com/user-attachments/assets/72be0ec7-9531-4c12-8c2b-a243bd46f969)
+![Custom Mine Placement](https://github.com/user-attachments/assets/d1809a5c-b2b2-4b12-bee3-7cd2957f3850)
+![Logic Engine Solving custom board, Direction: E](https://github.com/user-attachments/assets/37c7b527-0d01-4750-b1f5-983ba103222f)
