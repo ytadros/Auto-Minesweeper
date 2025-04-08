@@ -31,7 +31,7 @@ This project is currently undergoing a major refactor to improve structure, main
 
 # Auto-Minesweeper
 
-This project began with my love for Minesweeper and my deep fascination—shaped in part by being autistic—with patterns, logic, and visualizing how things work under the hood. While you can absolutely use this like a normal Minesweeper game, the real heart of it is the logic engine: a solver that reasons through each move, displays its thought process visually, and lets me tinker with that process in real time. I wanted to build something where I could see the logic unfold—one step at a time—and explore how small changes in the engine affect outcomes on the board.
+This project began with my love for Minesweeper and my deep fascination with patterns, logic, and visualizing how things work under the hood. While you can absolutely use this like a normal Minesweeper game, the real heart of it is the logic engine: a solver that reasons through each move, displays its thought process visually, and lets me tinker with that process in real time. I wanted to build something where I could see the logic unfold—one step at a time—and explore how small changes in the engine affect outcomes on the board.
 
 The screenshots below show the logic engine in action, visualizing its deductions and choices as it solves the game. The interface is designed to give me full control over game generation, including manually placing mines before the first move (which triggers actual mine placement). You can even adjust how the logic engine processes its reasoning—FIFO, LIFO, directional priorities, or even random—through the direction panel. For me, it’s not just a game; it’s a playground for experimenting with logic and watching it come to life.
 
