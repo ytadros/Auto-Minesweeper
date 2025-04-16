@@ -1,40 +1,48 @@
-## 🚧 Project Under Active Refactor (April 2025)
+## 🚧 Project Mid-Refactor — Logic Engine Already Functional
 
-This project is currently undergoing a major refactor to improve structure, maintainability, and performance. Over the coming weeks, expect the following:
+This project is in the middle of a major refactor focused on modularity, performance, and code quality. But the core logic engine is already working — and it's worth exploring. The solver plays Minesweeper step-by-step using deductive logic, visually revealing how each conclusion is reached. It's more than a game; it's a testbed for reasoning systems and interactive problem-solving.
 
-### 🔧 In Progress:
-- Separating game logic from the Tkinter GUI (moving toward MVC pattern)
-- Improving code structure to follow SOLID principles
-- Replacing list-based queues with `collections.deque`
-- Implementing unit tests and setting up CI via GitHub Actions
+### ✅ What's Already Done:
 
-### 🛣️ Planned (Later Stages):
-- Performance profiling using `cProfile` and `py-call-graph`
-- Improved UI/UX and potential for headless/batch play
-- Optional logging and configurable game settings (via JSON/YAML)
-- Possible probability-based move logic in solver
+- Built a functioning logic engine that visualizes deductions in real time  
+- Implemented customizable board generation and manual mine placement  
+- Enabled user control over solver behavior (FIFO, LIFO, directional priorities, random, etc.)  
 
-### 📅 Rough Timeline:
-| Week of | Focus |
-|---|---|
-| April 7–14 | Code structure refactor, unit test setup |
-| April 15–21 | Profiling + performance optimizations |
-| April 22–30 | Logging, config cleanup, optional features |
+### 🔧 Currently Working On:
 
-<br/><br/>
-> ### ⚠️ Recruiters/Reviewers: This repo reflects ongoing improvements! Please check commit history and PRs for recent progress.
-<br/>
+- Planning full decoupling of GUI from game logic (toward MVC structure)  
+- Evaluating migration from list-based queues to `collections.deque`  
+- Adding unit tests with Python’s `unittest` framework  
+- Refactoring modules for clearer separation of concerns  
+
+### 🛣️ Upcoming (Q2 2025):
+
+- Profiling and performance tuning (`cProfile`, `py-call-graph`)  
+- Optional logging and configuration via JSON/YAML  
+- UI/UX improvements and exploration of headless/batch-play modes  
+- (Stretch) Probability-based fallback logic for ambiguous states  
+
+> 🧠 **Note for Reviewers & Recruiters**: While the refactor is ongoing, the existing repo already demonstrates working logic, thoughtful design goals, and visual introspection tools. Check commit history and PRs to follow progress.
 
 ---
 
-<br/>
-
 # Auto-Minesweeper
 
-This project began with my love for Minesweeper and my deep fascination with patterns, logic, and visualizing how things work under the hood. While you can absolutely use this like a normal Minesweeper game, the real heart of it is the logic engine: a solver that reasons through each move, displays its thought process visually, and lets me tinker with that process in real time. I wanted to build something where I could see the logic unfold—one step at a time—and explore how small changes in the engine affect outcomes on the board.
+I built this project out of a love for Minesweeper and a fascination with how logic can be made visible. It's fully playable, but the real focus is the solver: a visual engine that steps through its reasoning in public. You can watch how it makes deductions, how it handles ambiguity, and you can tweak aspects of its internal logic as it runs.
 
-The screenshots below show the logic engine in action, visualizing its deductions and choices as it solves the game. The interface is designed to give me full control over game generation, including manually placing mines before the first move (which triggers actual mine placement). You can even adjust how the logic engine processes its reasoning—FIFO, LIFO, directional priorities, or even random—through the direction panel. For me, it’s not just a game; it’s a playground for experimenting with logic and watching it come to life.
+Want to test a new rule? Try a different queueing strategy? Create an edge-case board with mines placed manually before the first click? This is the playground.
 
-![Logic Engine At Work](https://github.com/user-attachments/assets/72be0ec7-9531-4c12-8c2b-a243bd46f969)
-![Custom Mine Placement](https://github.com/user-attachments/assets/d1809a5c-b2b2-4b12-bee3-7cd2957f3850)
-![Logic Engine Solving custom board, Direction: E](https://github.com/user-attachments/assets/37c7b527-0d01-4750-b1f5-983ba103222f)
+![Solver Visualization](https://github.com/user-attachments/assets/72be0ec7-9531-4c12-8c2b-a243bd46f969)  
+*The solver highlighting tiles as it deduces safe moves using rule-based logic.*
+
+![Custom Mine Placement](https://github.com/user-attachments/assets/d1809a5c-b2b2-4b12-bee3-7cd2957f3850)  
+*Manual mine placement before first move — useful for testing or experimentation.*
+
+![Logic Engine Solving custom board, Direction: E](https://github.com/user-attachments/assets/37c7b527-0d01-4750-b1f5-983ba103222f)  
+*Same board in action: visual reasoning on a custom setup with directional logic control.*
+
+Whether you're into logic, Python design patterns, or just weirdly obsessed with Minesweeper like I am—you're welcome to explore, break things, and build smarter solvers.
+
+> ⚙️ *Note:* This was my first serious attempt at designing a structured OOP project from scratch. Since then, I’ve matured a lot as an engineer — and that’s part of what this refactor is about. Revisiting old code with new eyes has been its own kind of fun.
+
+---
