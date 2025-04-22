@@ -1,5 +1,5 @@
 import tkinter as tk
-from game_settings import PAUSE_TIMES, ACTIVE_FIELD_MSG
+from game_settings import PAUSE_TIMES, ACTIVE_FIELD_MSG, COLORS
 
 
 class DirectionPanel(tk.LabelFrame):
@@ -50,17 +50,24 @@ class DirectionPanel(tk.LabelFrame):
 class DisplaySettings:
     """Controls for showcasing a given process."""
 
-    def __init__(self, master, row, text):
+    def __init__(self, master, row, text, color_strs):
         super().__init__()
+
+        self._legend = tk.Frame(master=master)
+        for column, color_str in enumerate(color_strs):
+            color_label = tk.Label(master=self._legend, width=1, text=' ', bg=COLORS[color_str])
+            color_label.grid(row=0, column=column)
+        self._legend.grid(row=row, column=0)
+
         self._is_checked = tk.BooleanVar(value=False)
         self.checkbutton = tk.Checkbutton(master=master, text=text,
                                           variable=self._is_checked,
                                           command=self._enable_spinner)
-        self.checkbutton.grid(row=row, column=0)
+        self.checkbutton.grid(row=row, column=1)
 
         self.pause_spinner = tk.Spinbox(master=master, width=4,
                                         values=PAUSE_TIMES, state="disabled")
-        self.pause_spinner.grid(row=row, column=1)
+        self.pause_spinner.grid(row=row, column=2)
 
     @property
     def is_checked(self):
@@ -86,18 +93,22 @@ class DisplayPanel(tk.LabelFrame):
     def __init__(self, master):
         super().__init__(master=master, text="Display Processes")
 
+        self.legend_label = tk.Label(master=self, text="Legend", fg="gray50")
+        self.legend_label.grid(row=0, column=0)
+
         self.check_label = tk.Label(master=self, text="Highlight", fg="gray50")
-        self.check_label.grid(row=0, column=0)
+        self.check_label.grid(row=0, column=1)
 
         self.pause_label = tk.Label(master=self, text="Pause time (ms)", fg="gray50")
-        self.pause_label.grid(row=0, column=1)
+        self.pause_label.grid(row=0, column=2)
 
-        self.clear_queue_settings = DisplaySettings(master=self, row=1, text="to clear")
-        self.auto_queue_settings = DisplaySettings(master=self, row=2, text="to solve")
-        self.to_flag_settings = DisplaySettings(master=self, row=3, text="to flag")
-        self.add_batch_settings = DisplaySettings(master=self, row=4, text="add to queue")
-        self.redundant_settings = DisplaySettings(master=self, row=5, text="remove redundant")
-        self.hyper_queue_settings = DisplaySettings(master=self, row=6, text="hyper queue")
+        self.clear_queue_settings = DisplaySettings(master=self, row=1, text="to clear", color_strs=["clear_queue"])
+        self.auto_queue_settings = DisplaySettings(master=self, row=2, text="to solve", color_strs=["auto_queue"])
+        self.to_flag_settings = DisplaySettings(master=self, row=3, text="to flag", color_strs=["to_flag"])
+        self.add_batch_settings = DisplaySettings(master=self, row=4, text="add to queue",
+                                                  color_strs=['new_clear', 'new_auto', 'new_hyper'])
+        self.redundant_settings = DisplaySettings(master=self, row=5, text="remove redundant", color_strs=['redundant'])
+        self.hyper_queue_settings = DisplaySettings(master=self, row=6, text="hyper queue", color_strs=['hyper_queue'])
 
 
 class NewGamePanel(tk.LabelFrame):
