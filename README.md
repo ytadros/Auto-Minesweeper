@@ -12,7 +12,7 @@ Originally built as my Python capstone project in 2021, this tool was my first s
 
 ### ✅ Core Features (Already Functional)
 - **Visual deduction engine** — Solver shows its reasoning in real time
-- **Board customization** — Choose size, mine density, or manually place mines (even custom patterns!)
+- **Board customization** — Choose size, mine density, or manually place mines
 - **Multiple solver modes** — FIFO, LIFO, directional, and random logic ordering
 - **First-click safety** — Mines never appear on or near the first move
 - **Two-level inference** — Hyper Solve mode supports advanced multi-cell logic using overlapping neighbor sets
@@ -23,7 +23,7 @@ Originally built as my Python capstone project in 2021, this tool was my first s
 - **`Game` class** manages board state, solver coordination, win/loss logic
 - **`Cell` class** encapsulates individual tile behavior with Tkinter visuals
 - **`Minefield`** maps (x, y) coordinates to `Cell` instances and handles mine placement and uncovering logic
-- **`Block`** (from `neighborhood.py`) represents a cell’s neighbors, classifying them as flagged/naked/unknown to apply local rules
+- **`Block`** (from `neighborhood.py`) represents a cell’s neighbors, classifying them as flagged/covered/uncovered to apply local rules
 - **`Neighborhood`** enables second-order logic by analyzing intersecting `Blocks` of adjacent cells — this is the heart of hyper-solving
 - **`Queue` and `SuperQueue`** control logic traversal, solver direction (eastward, random, etc.), and visual step pacing with user-adjustable settings
 
