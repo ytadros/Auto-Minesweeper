@@ -40,15 +40,16 @@ This project is in active refactor. Current goals include:
 
 ---
 
-### 📸 Screenshots
-![Solver Visualization](https://github.com/user-attachments/assets/72be0ec7-9531-4c12-8c2b-a243bd46f969)  
-*The solver highlighting tiles as it deduces safe moves using rule-based logic.*
+### 📸 Visual Demo
 
-![Custom Mine Placement](https://github.com/user-attachments/assets/d1809a5c-b2b2-4b12-bee3-7cd2957f3850)  
-*Manual mine placement before first move — useful for testing or experimentation.*
+#### 🎥 Visual debugging in action  
+Solver logic unfolds with live step control, pause tuning, and dynamic highlights.  
+![Solver in Action](./minesweeper_gameplay_1.gif)
 
-![Logic Engine Solving custom board, Direction: E](https://github.com/user-attachments/assets/37c7b527-0d01-4750-b1f5-983ba103222f)  
-*Same board in action: visual reasoning on a custom setup with directional logic control.*
+#### 🎥 From manual test board to directional solve  
+Highlights first-click safety, configurable logic direction, and board initialization for rule testing.  
+![Custom + Directional Solve](./minesweeper_gameplay_2.gif)
+
 
 ---
 
